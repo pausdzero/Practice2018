@@ -1,0 +1,23 @@
+//Begin page main
+//Declare any variables shared between functions here
+int Y;
+float position[3];
+void init(){
+	//This function is called once when your code is first loaded.
+
+	//IMPORTANT: make sure to set any variables that need an initial value.
+	//Do not assume variables will be set to 0 automatically!
+Y=0;
+position[0] = 2.0f;
+position[1] = 0.0f;
+position[2] = 0.0f;
+    
+    
+}
+
+void loop(){
+	//This function is called once per second.  Use it to control the satellite.
+api.setPositionTarget(position);
+}
+
+//End page main
