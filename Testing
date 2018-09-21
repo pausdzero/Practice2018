@@ -1,0 +1,35 @@
+//Begin page main
+
+//Declare any variables shared between functions here
+
+int Y;
+
+float position[3];
+
+void init(){
+
+
+
+Y=0;
+
+position[0] = 0.0f;
+
+position[1] = -2.0f;
+
+position[2] = 0.0f;
+
+    
+
+    
+
+}
+
+
+
+void loop(){
+
+api.setPositionTarget(position);
+
+}
+
+
