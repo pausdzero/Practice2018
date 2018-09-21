@@ -1,0 +1,133 @@
+float targposition[3];
+float velocity[3];
+float debris[11][4];
+float myState[12];
+float *myPos;
+float *myVel;
+float *myAtt;
+float *myRot;
+float fuel;
+float smalldebris[4][4], meddebris[4][4], largedebris[3][4];
+float smalldistances[3];
+float meddistances[3];
+float largedistances[2];
+float maxsmall, maxmed, maxlarge;
+float sleftdistance, srightdistance;
+float sleftpoint[3], srightpoint[3];
+void init(){
+    targposition[0] = 0.0f;
+    targposition[1] = 0.7f;
+    targposition[2] = 0.0f;
+    game.getDebris(debris);
+    for (int i = 0; i<4; i++){
+        for (int j = 0; j<4; j++){
+            smalldebris[i][j] = debris[i][j];
+            //DEBUG(("debris %d, %f ", i+1, debris[i][j]));
+            //DEBUG(("smalldebris %d, %f ", i+1, smalldebris[i][j]));
+        }
+    }
+    sleftpoint[0] = -0.64f;
+	sleftpoint[1] = smalldebris[0][1];
+	sleftpoint[2] = 0.0f;
+	srightpoint[0] = 0.64f;
+	srightpoint[1] = smalldebris[3][1];
+	srightpoint[2] = 0.0f;
+	//DEBUG(("left boundary point: %f, %f", sleftpoint[0], sleftpoint[1]));
+	//DEBUG(("right boundary point: %f, %f", srightpoint[0], srightpoint[1]));
+    for (int i = 4; i<8; i++){
+        for (int j = 0; j<4; j++){
+            meddebris[i-4][j] = debris[i][j];
+            //DEBUG(("meddebris %d, %f ", i+1, meddebris[i-4][j-4]));
+        }
+    }
+    for (int i = 8; i<12; i++){
+        for (int j = 0; j<4; j++){
+            largedebris[i-8][j] = debris[i][j];
+            //DEBUG(("largedebris %d, %f ", i+1, largedebris[i-8][j]-8));
+        }
+    }
+    //0,1,2: debris position; 3: radius
+    /*for (int i=0; i<11; i++){
+        DEBUG(("debris %d, radius %f: %f, %f, %f", i+1, debris[i][3], debris[i][0], debris[i][1], debris[i][2]));
+    }*/
+    //DEBUG(("smalldebris[3][0]: %f", smalldebris[3][0]));
+    /*for (int i = 0; i<4; i++){
+        DEBUG(("smalldebris %d: %f, %f, %f", i+1, smalldebris[i][0], smalldebris[i][1], smalldebris[i][2]));
+    }
+    for (int i = 0; i<4; i++){
+        DEBUG(("meddebris %d: %f, %f, %f", i+1, meddebris[i][0], meddebris[i][1], meddebris[i][2]));
+    }
+    for (int i = 0; i<3; i++){
+        DEBUG(("largedebris %d: %f, %f, %f", i+1, largedebris[i][0], largedebris[i][1], largedebris[i][2]));
+    }*/
+    
+    /*velocity[0] = 0.0f;
+    velocity[1] = -4.0f;
+    velocity[2] = 0.0f;*/
+    for (int i=1; i<4; i++){
+	        /*smalldistances[i-1] = sqrtf(mathSquare(smalldebris[i][0] - smalldebris[i-1][0])
+	        + mathSquare(smalldebris[i][1] - smalldebris[i-1][1])
+	        + mathSquare(smalldebris[i][2] - smalldebris[i-1][2]));
+	        DEBUG(("smalldistance[%d] = %f", i-1, smalldistances[i-1]));
+	        */
+	        smalldistances[i-1] = distance(smalldebris[i], smalldebris[i-1]);
+	        //DEBUG(("smalldistance[%d] = %f", i-1, smalldistances[i-1]));
+	}
+	
+	for (int i=1; i<4; i++){
+	        /*meddistances[i-1] = sqrtf(mathSquare(meddebris[i][0] - meddebris[i-1][0])
+	        + mathSquare(meddebris[i][1] - meddebris[i-1][1])
+	        + mathSquare(meddebris[i][2] - meddebris[i-1][2]));*/
+	        meddistances[i-1] = distance(meddebris[i], meddebris[i-1]);
+	        //DEBUG(("meddistance[%d] = %f", i-1, meddistances[i-1]));
+	}
+	for (int i=1; i<3; i++){
+	        /*largedistances[i-1] = sqrtf(mathSquare(largedebris[i][0] - largedebris[i-1][0])
+	        + mathSquare(largedebris[i][1] - largedebris[i-1][1])
+	        + mathSquare(largedebris[i][2] - largedebris[i-1][2]));*/
+	        largedistances[i-1] = distance(largedebris[i], largedebris[i-1]);
+	        //DEBUG(("largedistance[%d] = %f", i-1, largedistances[i-1]));
+	}
+	sleftdistance = distance(sleftpoint,smalldebris[0]);
+	srightdistance = distance(srightpoint,smalldebris[3]);
+	//DEBUG(("sleftdistance: %f", sleftdistance));
+	//DEBUG(("srightdistance: %f", srightdistance));
+	
+	maxsmall = max(smalldistances[0], smalldistances[1], smalldistances[2], sleftdistance, srightdistance);
+    update();
+	
+}
+
+void loop(){
+	//SPHERES radius: 0.11
+	//Small radius: 0.03; Medium radius: 0.045; Large radius: 0.09
+	
+	//api.setPositionTarget(position);
+	//api.setVelocityTarget(velocity);
+	update();
+	//Just try to make past first row of debris:
+
+}
+
+void update(){
+    api.getMyZRState(myState);
+    myPos = myState;
+    myVel = &myState[3];
+    myAtt = &myState[6];
+    myRot = &myState[9];
+    fuel = game.getFuelRemaining();
+}
+
+float max(float a, float b, float c, float d, float e){
+    float max = a;
+    if (b > max){
+        max = b;
+        if (c > max){
+            max = c;
+        }
+    }
+    return max;
+}
+float distance(float a[], float b[]){
+    return (sqrtf(mathSquare(a[0] - b[0]) + mathSquare(a[1] - b[1]) + mathSquare(a[2]-b[2])));
+}
