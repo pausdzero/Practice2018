@@ -1,1 +1,16 @@
+Hi! Was asked by one of our glorious team captains to post meeting notes/my thoughts, so here goes.
 
+A couple of strategies we discussed:
+- me + Renee:
+  - limit the sphere to 100 paths (5 potential paths through first row, 5 through second, and 4 through third). Each path goes through a midpoint between debris pieces in that row. Find paths with min damage. From that set, choose path with min distance
+  - positive = pretty easy to change the optimization scheme for damage vs distance
+  - negative = far from optimal
+- don't remember who suggested this, if it was you please fill in your name
+  - make a graph of n points with each point being a location the sphere's midpoint is allowed to be. Traverse this graph to find path with min damage/min distance
+  - positive = could be randomized (can't give us a test case where it systematically fails), pretty easy to change optimization algorithm, and for large n could be better than first approach
+  - negative = far from optimal and I personally would have to try it to determine its efficacy 
+  
+Some more thoughts:
+- do we need to come up with an optimal algorithm? Is a good heuristic sufficient?
+- maybe we could "block out" the sections of the graph the midpoint of the sphere could not occupy, then attempt to solve this problem?
+- could there be any graph search techniques or minimum distance algorithms we could use here? anybody read anything relevant?
