@@ -14,3 +14,5 @@ Some more thoughts:
 - do we need to come up with an optimal algorithm? Is a good heuristic sufficient?
 - maybe we could "block out" the sections of the graph the midpoint of the sphere could not occupy, then attempt to solve this problem?
 - could there be any graph search techniques or minimum distance algorithms we could use here? anybody read anything relevant?
+
+Also, occurs to me that we could do a fast implementation of dijkstra with the graph approach, and we could optimize either for distance or damage. This would allow for a large graph (dijkstra is pretty fast).
